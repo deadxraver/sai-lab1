@@ -68,9 +68,9 @@ siblings(vasilii, raya).
 areSiblings(X, Y) :-
     siblings(X, Y);
     siblings(Y, X);
-    X \= Y,
     setof(Parent, parent(Parent, X), SetOfParents1),
     setof(Parent, parent(Parent, Y), SetOfParents2),
+    X \= Y,
     SetOfParents1 == SetOfParents2
   .  % 2 правило
 
@@ -98,3 +98,14 @@ person(X) :-
 % проверка живой - нет
 alive(X) :- \+died(X, _). % 4 правило
 
+isGrandparent(Grandparent, Child) :-
+  parent(Grandparent, Parent),
+  parent(Parent, Child)
+  . % 5 правило - проверка на дедушку/бабушку
+
+areCousins(X, Y) :-
+  isGrandparent(Z, X),
+  isGrandparent(Z, Y),
+  \+areSiblings(X, Y),
+  X \= Y
+  . % 6 правило - проверка, являются ли двоюродными братом/сестрой
