@@ -86,14 +86,15 @@ died(matilda, 2025).
 
 % правила для того чтобы быть человеком
 person(X) :-
-  \+owner(_, X),
   (
     parent(X, _);
     parent(_, X);
     siblings(X, _);
     siblings(_, X);
     born(X, _)
-  ).  % 3 правило
+  ),
+  \+owner(_, X)
+  .  % 3 правило
 
 % проверка живой - нет
 alive(X) :- \+died(X, _). % 4 правило
@@ -109,3 +110,25 @@ areCousins(X, Y) :-
   \+areSiblings(X, Y),
   X \= Y
   . % 6 правило - проверка, являются ли двоюродными братом/сестрой
+
+isNephew(Uncle, Nephew) :-
+  areSiblings(Uncle, Parent),
+  parent(Parent, Nephew)
+  . % 7 правило - на дядю/тетю
+
+isMarried(X) :-
+  married(X, _, _);
+  married(_, X, _)
+  . % 8 правило - женат/замужем?
+
+hasChildren(X) :-
+  parent(X, _). % 9 правило - есть ли дети?
+
+isAncestor(Ancestor, Target) :-
+  parent(Ancestor, Target).
+
+isAncestor(Ancestor, Target) :-
+  parent(Ancestor, Middle),
+  isAncestor(Middle, Target)
+  . % 10 правило - является ли предком
+
